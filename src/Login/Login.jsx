@@ -2,19 +2,37 @@ import React from "react";
 import { useState } from "react";
 import "./Login.css";
 import { useForm } from "react-hook-form";
+import { Navigate } from "react-router-dom";
+import axios from "axios";
 
 function Login() {
   const [formdata, setFormData] = useState();
+  const [isVerified, setIsVerified] = useState();
+
+  const [token, setToken] = useState(localStorage.getItem("newtoken")); // token got it
+  const [isTokenVerified, setIsTokenVerified] = useState(false);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   const onSubmit = (data) => {
     console.log(data);
-
+    if (data.username === "test" && data.email === "test@gmail.com") {
+      console.log("verified");
+      setIsVerified(true);
+    } else {
+      console.log("failure");
+      setIsVerified(false);
+    }
     setFormData(data);
   };
+
+  if (isVerified) {
+    return <Navigate to="/home" />;
+  }
 
   return (
     <div className="container">

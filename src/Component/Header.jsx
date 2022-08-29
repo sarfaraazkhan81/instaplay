@@ -1,9 +1,19 @@
 import React from "react";
 // import "./Header.css";
-import "./Sass/main.css";
-import logo from "./assets/images/logo.png";
+import "../Sass/main.css";
+import logo from "../assets/images/logo.png";
 import { Circles } from "react-loader-spinner";
+import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 function Header(props) {
+  console.log(localStorage.getItem("newtoken"), "pencil");
+  const logout = () => {
+    // alert("logout");
+    window.localStorage.clear();
+  };
+
+  console.log(localStorage.getItem("newtoken"), "pencil");
+
+  console.log(localStorage.getItem("newtoken"), "pencil");
   return (
     <div className="headerContainer">
       <div className="content">
@@ -25,6 +35,11 @@ function Header(props) {
               radius="9"
               color="orange"
               ariaLabel="three-dots-loading"
+            />
+          </div>
+          <div className="logOut" onClick={logout}>
+            <PowerSettingsNewIcon
+              style={{ fontSize: "2rem", fontWeight: "600" }}
             />
           </div>
         </div>

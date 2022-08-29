@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import play from "./assets/images/play.png";
-import "./Sass/main.css";
+import { Link, Navigate } from "react-router-dom";
+import play from "../assets/images/play.png";
+import "../Sass/main.css";
 import { Pagination } from "@mui/material";
 import { DynamicStar } from "react-dynamic-star";
 import Header from "./Header";
@@ -19,7 +19,10 @@ function Trending() {
   const [trailerKey, setTrailerKey] = useState();
   const [hover, setHover] = useState(false);
   const [queary, setQueary] = useState("");
+  const [token, setToken] = useState(localStorage.getItem("newtoken"));
+  const [verifyToken, setVerifyToken] = useState(false);
 
+  // urls
   const baseUrl = "https://api.themoviedb.org/3";
   const apiKEY = `api_key=67011cf113627fe3311316af752fbcc5&page=${page}`;
   const Api_URL =
@@ -28,6 +31,7 @@ function Trending() {
     apiKEY;
   const imageBaseUrl = "https://image.tmdb.org/t/p/w500/";
 
+  //api calling functions
   const getMovie = async () => {
     const response = await fetch(Api_URL);
 
@@ -36,19 +40,24 @@ function Trending() {
     setNumberOfPages(data.total_pages);
   };
 
+  /// useEffect function
   useEffect(() => {
     getMovie();
     ratingNo();
   }, [page]);
 
+  //pagination
   const handleChange = (page) => {
     setPage(page);
     window.scroll(0, 0);
   };
+
+  //search function input taker
   const searchText = (event) => {
     setFilterData(event.target.value);
   };
 
+  //search main function
   let dataSearched = moviedata.filter((item) => {
     return Object.keys(item).some((key) =>
       item[key]
@@ -58,6 +67,9 @@ function Trending() {
     );
   });
 
+  // functios for the sorting
+
+  //function to sort lowest firs
   const lowest = () => {
     const vote = [...moviedata];
     vote.sort((a, b) => {
@@ -66,6 +78,7 @@ function Trending() {
     setMovies(vote);
   };
 
+  // function for sorting highest first
   const highest = () => {
     const vote = [...moviedata];
     vote.sort((a, b) => {
@@ -122,12 +135,12 @@ function Trending() {
       `https://api.themoviedb.org/3/search/movie?api_key=67011cf113627fe3311316af752fbcc5&language=en-US&query=${queary}&page=${1}&include_adult=false`
     );
     const result = response.data.results;
-    console.log(result);
+    // console.log(result);
     setMovies(result);
   };
   const queryTextHandler = (event) => {
     const inputData = event.target.value;
-    console.log(inputData);
+    // console.log(inputData);
     setQueary(inputData);
   };
 
@@ -137,6 +150,18 @@ function Trending() {
     }
   }, [queary]);
 
+  useEffect(() => {
+    if (token.length > 5) {
+      // alert("ok");
+      setVerifyToken(false);
+    } else {
+      setVerifyToken(true);
+    }
+
+    if (verifyToken) {
+      return <Navigate to="/" />;
+    }
+  });
   return (
     <div className="mainCntr">
       <Header

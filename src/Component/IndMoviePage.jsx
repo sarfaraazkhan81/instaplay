@@ -1,20 +1,22 @@
 import { useState, useEffect } from "react";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-import "./Sass/main.css";
+import "../Sass/main.css";
 import Header from "./Header";
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import ReactPlayer from "react-player";
 import axios from "axios";
 
-function IndMovie() {
+function IndMovie(props) {
   const [movie, setMovie] = useState({});
   const { id } = useParams();
   const [videoId, setVideoId] = useState([]);
   const [trailerContainer, setTrailerContainer] = useState(false);
   const [moviInfo, setMoviInfo] = useState(true);
-
   const [dummyData, setDummyData] = useState([]);
+  const [token, setToken] = useState(localStorage.getItem("newtoken"));
+  const [verifyToken, setVerifyToken] = useState(false);
 
+  console.log(props.token, "indivi");
   const baseUrl = "https://api.themoviedb.org/3";
   const apiKEY = "api_key=67011cf113627fe3311316af752fbcc5";
   const Api_URL =
@@ -62,6 +64,18 @@ function IndMovie() {
     setMoviInfo(true);
   };
 
+  useEffect(() => {
+    if (token.length > 5) {
+      setVerifyToken(false);
+    } else {
+      setVerifyToken(true);
+    }
+
+    if (verifyToken) {
+      return <Navigate to="/" />;
+    }
+  });
+  console.log(props.token, "okkk");
   return (
     <div className="indmoviesContainer">
       <Header />
@@ -97,7 +111,7 @@ function IndMovie() {
             )}
             {moviInfo && (
               <div className="movieInfo">
-                <Link to={"/"}>
+                <Link to={"/home"}>
                   <KeyboardBackspaceIcon style={{ color: "#ffff" }} />
                 </Link>
 
