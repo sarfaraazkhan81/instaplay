@@ -3,14 +3,15 @@ import { useState } from "react";
 import "./Login.css";
 import { useForm } from "react-hook-form";
 import { Navigate } from "react-router-dom";
-import axios from "axios";
+import Cookies from "js-cookie";
+import { useEffect } from "react";
 
 function Login() {
   const [formdata, setFormData] = useState();
   const [isVerified, setIsVerified] = useState();
-
-  const [token, setToken] = useState(localStorage.getItem("newtoken")); // token got it
-  const [isTokenVerified, setIsTokenVerified] = useState(false);
+  const [tokenVerify, setIsTokenVerified] = useState(true);
+  const [authToken, setAuthToken] = useState(Cookies.get("newtoken"));
+  console.log(authToken, "auth token login");
 
   const {
     register,
@@ -19,18 +20,27 @@ function Login() {
   } = useForm();
 
   const onSubmit = (data) => {
-    console.log(data);
+    // console.log(data);
     if (data.username === "test" && data.email === "test@gmail.com") {
-      console.log("verified");
+      // console.log("verified");
       setIsVerified(true);
     } else {
-      console.log("failure");
+      // console.log("failure");
       setIsVerified(false);
     }
     setFormData(data);
   };
+  useEffect(() => {
+    if (authToken.length > 8) {
+      // console.log("the lenght is verifed");
+      setIsTokenVerified(true);
+    } else {
+      // console.log("token length is not verifide");
+      setIsTokenVerified(true);
+    }
+  });
 
-  if (isVerified) {
+  if (isVerified && tokenVerify) {
     return <Navigate to="/home" />;
   }
 

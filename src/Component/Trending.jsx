@@ -7,6 +7,7 @@ import { DynamicStar } from "react-dynamic-star";
 import Header from "./Header";
 import Home from "./Home";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 function Trending() {
   const [moviedata, setMovies] = useState([]);
@@ -19,8 +20,9 @@ function Trending() {
   const [trailerKey, setTrailerKey] = useState();
   const [hover, setHover] = useState(false);
   const [queary, setQueary] = useState("");
-  const [token, setToken] = useState(localStorage.getItem("newtoken"));
-  const [verifyToken, setVerifyToken] = useState(false);
+  const [tokenVerify, setIsTokenVerified] = useState(false);
+  const [authToken, setAuthToken] = useState(Cookies.get("newtoken"));
+  console.log(authToken, "auth token trending");
 
   // urls
   const baseUrl = "https://api.themoviedb.org/3";
@@ -151,17 +153,19 @@ function Trending() {
   }, [queary]);
 
   useEffect(() => {
-    if (token.length > 5) {
-      // alert("ok");
-      setVerifyToken(false);
+    if (authToken.length > 8) {
+      // console.log("the lenght is verifed");
+      setIsTokenVerified(false);
     } else {
-      setVerifyToken(true);
-    }
-
-    if (verifyToken) {
-      return <Navigate to="/" />;
+      // console.log("token length is not verifide");
+      setIsTokenVerified(true);
     }
   });
+
+  if (tokenVerify) {
+    return <Navigate to="/" />;
+  }
+
   return (
     <div className="mainCntr">
       <Header

@@ -5,18 +5,19 @@ import Header from "./Header";
 import { Link, Navigate, useParams } from "react-router-dom";
 import ReactPlayer from "react-player";
 import axios from "axios";
+import Cookies from "js-cookie";
 
-function IndMovie(props) {
+function IndMovie() {
   const [movie, setMovie] = useState({});
   const { id } = useParams();
   const [videoId, setVideoId] = useState([]);
   const [trailerContainer, setTrailerContainer] = useState(false);
   const [moviInfo, setMoviInfo] = useState(true);
   const [dummyData, setDummyData] = useState([]);
-  const [token, setToken] = useState(localStorage.getItem("newtoken"));
-  const [verifyToken, setVerifyToken] = useState(false);
+  const [tokenVerify, setIsTokenVerified] = useState();
+  const [authToken, setAuthToken] = useState(Cookies.get("newtoken"));
+  console.log(authToken, "auth token login");
 
-  console.log(props.token, "indivi");
   const baseUrl = "https://api.themoviedb.org/3";
   const apiKEY = "api_key=67011cf113627fe3311316af752fbcc5";
   const Api_URL =
@@ -65,17 +66,18 @@ function IndMovie(props) {
   };
 
   useEffect(() => {
-    if (token.length > 5) {
-      setVerifyToken(false);
+    if (authToken.length > 8) {
+      // console.log("the lenght is verifed");
+      setIsTokenVerified(false);
     } else {
-      setVerifyToken(true);
-    }
-
-    if (verifyToken) {
-      return <Navigate to="/" />;
+      // console.log("token length is not verifide");
+      setIsTokenVerified(true);
     }
   });
-  console.log(props.token, "okkk");
+  if (!tokenVerify) {
+    return <Navigate to="/" />;
+  }
+
   return (
     <div className="indmoviesContainer">
       <Header />
