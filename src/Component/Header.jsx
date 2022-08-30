@@ -1,13 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 // import "./Header.css";
 import "../Sass/main.css";
 import logo from "../assets/images/logo.png";
 import { Circles } from "react-loader-spinner";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
+import { Navigate, useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+
 function Header(props) {
+  const navigate = useNavigate();
   const logout = () => {
-    // alert("logout");
-    window.localStorage.clear();
+    const noToken = Cookies.remove("newtoken");
+    console.log("no token", noToken);
+    if (noToken === undefined) {
+      navigate("/");
+    } else {
+      return;
+    }
   };
 
   return (

@@ -2,16 +2,14 @@ import React from "react";
 import { useState } from "react";
 import "./Login.css";
 import { useForm } from "react-hook-form";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useEffect } from "react";
+import axios from "axios";
 
 function Login() {
   const [formdata, setFormData] = useState();
-  const [isVerified, setIsVerified] = useState();
-  const [tokenVerify, setIsTokenVerified] = useState(true);
-  const [authToken, setAuthToken] = useState(Cookies.get("newtoken"));
-  console.log(authToken, "auth token login");
+  const navigate = useNavigate();
 
   const {
     register,
@@ -19,30 +17,34 @@ function Login() {
     formState: { errors },
   } = useForm();
 
+  const getTheToken = async () => {
+    const response = await axios.get(
+      "https://api.themoviedb.org/3/authentication/token/new?api_key=67011cf113627fe3311316af752fbcc5"
+    );
+    const gettoken = response.data.request_token;
+    Cookies.set("newtoken", gettoken);
+    console.log(gettoken, "token hasbeen set");
+  };
+
   const onSubmit = (data) => {
     // console.log(data);
-    if (data.username === "test" && data.email === "test@gmail.com") {
-      // console.log("verified");
-      setIsVerified(true);
-    } else {
-      // console.log("failure");
-      setIsVerified(false);
-    }
+    // if (data.username === "test" && data.email === "test@gmail.com") {
+    //   // console.log("verified");
+    //   setIsVerified(true);
+    // } else {
+    //   // console.log("failure");
+    //   setIsVerified(false);
+    // }
     setFormData(data);
   };
+
   useEffect(() => {
-    if (authToken.length > 8) {
-      // console.log("the lenght is verifed");
-      setIsTokenVerified(true);
-    } else {
-      // console.log("token length is not verifide");
-      setIsTokenVerified(true);
+    var token = Cookies.get("newtoken");
+    console.log(token, "got the token");
+    if (token !== undefined) {
+      navigate("/home");
     }
   });
-
-  if (isVerified && tokenVerify) {
-    return <Navigate to="/home" />;
-  }
 
   return (
     <div className="container">
@@ -73,7 +75,7 @@ function Login() {
           {errors.email && <p style={{ color: "red" }}>email is required</p>}
         </div>
         <div className="buttonContainer">
-          <button className="loginButton" type="submit">
+          <button className="loginButton" type="submit" onClick={getTheToken}>
             Login
           </button>
         </div>

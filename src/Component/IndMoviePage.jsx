@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import "../Sass/main.css";
 import Header from "./Header";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useParams, useNavigate } from "react-router-dom";
 import ReactPlayer from "react-player";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -14,10 +14,10 @@ function IndMovie() {
   const [trailerContainer, setTrailerContainer] = useState(false);
   const [moviInfo, setMoviInfo] = useState(true);
   const [dummyData, setDummyData] = useState([]);
-  const [tokenVerify, setIsTokenVerified] = useState();
+
   const [authToken, setAuthToken] = useState(Cookies.get("newtoken"));
   console.log(authToken, "auth token ind");
-
+  const navigate = useNavigate();
   const baseUrl = "https://api.themoviedb.org/3";
   const apiKEY = "api_key=67011cf113627fe3311316af752fbcc5";
   const Api_URL =
@@ -66,17 +66,15 @@ function IndMovie() {
   };
 
   useEffect(() => {
-    if (authToken.length > 8) {
-      // console.log("the lenght is verifed");
-      setIsTokenVerified(false);
+    var temp = Cookies.get("newtoken");
+    console.log(temp, "off temp");
+    if (temp === undefined) {
+      console.log("if this is undefined");
+      navigate("/");
     } else {
-      // console.log("token length is not verifide");
-      setIsTokenVerified(true);
+      console.log("this is not undefined");
     }
   });
-  if (tokenVerify) {
-    return <Navigate to="/" />;
-  }
 
   return (
     <div className="indmoviesContainer">

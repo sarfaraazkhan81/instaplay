@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import play from "../assets/images/play.png";
 import "../Sass/main.css";
 import { Pagination } from "@mui/material";
@@ -21,8 +21,7 @@ function Trending() {
   const [hover, setHover] = useState(false);
   const [queary, setQueary] = useState("");
   const [tokenVerify, setIsTokenVerified] = useState(false);
-  const [authToken, setAuthToken] = useState(Cookies.get("newtoken"));
-  console.log(authToken, "auth token trending");
+  const navigate = useNavigate();
 
   // urls
   const baseUrl = "https://api.themoviedb.org/3";
@@ -47,6 +46,18 @@ function Trending() {
     getMovie();
     ratingNo();
   }, [page]);
+
+  useEffect(() => {
+    var temp = Cookies.get("newtoken");
+    console.log("temp", temp);
+    if (temp === undefined) {
+      console.log("hello");
+      navigate("/");
+    } else {
+      console.log("test");
+      return;
+    }
+  }, []);
 
   //pagination
   const handleChange = (page) => {
@@ -151,20 +162,6 @@ function Trending() {
       getsSearchData();
     }
   }, [queary]);
-
-  useEffect(() => {
-    if (authToken.length > 8) {
-      // console.log("the lenght is verifed");
-      setIsTokenVerified(false);
-    } else {
-      // console.log("token length is not verifide");
-      setIsTokenVerified(true);
-    }
-  });
-
-  if (tokenVerify) {
-    return <Navigate to="/" />;
-  }
 
   return (
     <div className="mainCntr">

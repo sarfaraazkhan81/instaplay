@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import { useState, useEffect } from "react";
 
 function AuthToken() {
-  const [authToken, setAuthToken] = useState(false);
+  const [getauthToken, setGetAuthToken] = useState(false);
 
   const getTheToken = async () => {
     const response = await axios.get(
@@ -12,6 +12,7 @@ function AuthToken() {
     );
     const gettoken = response.data.request_token;
     Cookies.set("newtoken", gettoken);
+    console.log(gettoken);
   };
   useEffect(() => {
     getTheToken();
