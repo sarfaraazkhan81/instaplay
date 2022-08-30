@@ -16,7 +16,7 @@ function IndMovie() {
   const [dummyData, setDummyData] = useState([]);
   const [tokenVerify, setIsTokenVerified] = useState();
   const [authToken, setAuthToken] = useState(Cookies.get("newtoken"));
-  console.log(authToken, "auth token login");
+  console.log(authToken, "auth token ind");
 
   const baseUrl = "https://api.themoviedb.org/3";
   const apiKEY = "api_key=67011cf113627fe3311316af752fbcc5";
@@ -74,7 +74,7 @@ function IndMovie() {
       setIsTokenVerified(true);
     }
   });
-  if (!tokenVerify) {
+  if (tokenVerify) {
     return <Navigate to="/" />;
   }
 
