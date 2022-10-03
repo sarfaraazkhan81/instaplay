@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import "../Sass/main.css";
 import Header from "./Header";
@@ -8,8 +9,11 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 function IndMovie() {
+  const indiVidualData = useSelector((state) => state.IndividualReducer);
   const [movie, setMovie] = useState({});
   const { id } = useParams();
+  const dispatch = useDispatch();
+
   const [videoId, setVideoId] = useState([]);
   const [trailerContainer, setTrailerContainer] = useState(false);
   const [moviInfo, setMoviInfo] = useState(true);
@@ -35,8 +39,10 @@ function IndMovie() {
     const { results } = data;
 
     setDummyData(results);
+
     const sameData = results.find((item) => item.id === parseInt(id));
     setMovie(sameData);
+    dispatch(IndMovie(sameData));
   };
   // function for the trailer video request
 

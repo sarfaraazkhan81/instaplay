@@ -1,4 +1,5 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import "./Login.css";
 import { useForm } from "react-hook-form";
@@ -6,8 +7,12 @@ import { Navigate, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useEffect } from "react";
 import axios from "axios";
+import { LoginTokenAct } from "../redux/constants/action-types";
 
 function Login() {
+  const dispatch = useDispatch();
+  const tokenFromRedux = useSelector((state) => state.LoginTokenReducer);
+  // console.log(tokenFromRedux, "this is a login token");
   const [formdata, setFormData] = useState();
   const navigate = useNavigate();
 
@@ -24,6 +29,7 @@ function Login() {
     const gettoken = response.data.request_token;
     Cookies.set("newtoken", gettoken);
     console.log(gettoken, "token hasbeen set");
+    dispatch(LoginTokenAct(gettoken));
   };
 
   const onSubmit = (data) => {
@@ -41,6 +47,7 @@ function Login() {
   useEffect(() => {
     var token = Cookies.get("newtoken");
     console.log(token, "got the token");
+    console.log(tokenFromRedux, "actttttttttt");
     if (token !== undefined) {
       navigate("/home");
     }

@@ -9,7 +9,20 @@ import Home from "./Home";
 import axios from "axios";
 import Cookies from "js-cookie";
 
+import { SearchMovieApi, ListingApi } from ".././redux/constants/action-types";
+import { useDispatch, useSelector } from "react-redux";
+
 function Trending() {
+  const dispatch = useDispatch();
+  // consuming data from the redux store
+  const searchApiDataFromStore = useSelector((state) => state.SearchApiReducer);
+  const listingApiFromStore = useSelector((state) => state.ListingApiReducer);
+  const trailerApiDataFromStore = useSelector(
+    (state) => state.SearchApiReducer
+  );
+  const loginAuthR = useSelector((state) => state.LoginTokenReducer);
+
+  // componenet states
   const [moviedata, setMovies] = useState([]);
   const [page, setPage] = useState();
   const [numberOfPages, setNumberOfPages] = useState(10);
@@ -38,6 +51,8 @@ function Trending() {
 
     const data = await response.json();
     setMovies(data.results);
+    console.log(data.results, "data");
+    dispatch(ListingApi(data.results));
     setNumberOfPages(data.total_pages);
   };
 
@@ -71,7 +86,7 @@ function Trending() {
   };
 
   //search main function
-  let dataSearched = moviedata.filter((item) => {
+  let dataSearched = listingApiFromStore.filter((item) => {
     return Object.keys(item).some((key) =>
       item[key]
         .toString()
@@ -84,7 +99,7 @@ function Trending() {
 
   //function to sort lowest firs
   const lowest = () => {
-    const vote = [...moviedata];
+    const vote = [...listingApiFromStore];
     vote.sort((a, b) => {
       return a.vote_average - b.vote_average;
     });
@@ -93,7 +108,7 @@ function Trending() {
 
   // function for sorting highest first
   const highest = () => {
-    const vote = [...moviedata];
+    const vote = [...listingApiFromStore];
     vote.sort((a, b) => {
       return b.vote_average - a.vote_average;
     });
@@ -113,18 +128,20 @@ function Trending() {
     });
   };
 
-  const movieTrailerVideo = async (TrailerId) => {
-    const response = await axios.get(
-      `https://api.themoviedb.org/3/movie/${TrailerId}/videos?api_key=67011cf113627fe3311316af752fbcc5&language=en-US`
-    );
+  // const movieTrailerVideo = async (TrailerId) => {
+  //   const response = await axios.get(
+  //     `https://api.themoviedb.org/3/movie/${TrailerId}/videos?api_key=67011cf113627fe3311316af752fbcc5&language=en-US`
+  //   );
 
-    const data = response.data.results;
-    data.map((data) => {
-      return setTrailerKey(data.key);
-    });
-  };
+  //   const data = response.data.results;
+  //   data.map((data) => {
+  //     return setTrailerKey(data.key);
+  //     return dispatch(ListingApi(data.key))
 
-  movieTrailerVideo(TrailerId);
+  //   });
+  // };
+
+  // movieTrailerVideo(TrailerId);
 
   let renderingTheDiv;
 
@@ -148,8 +165,9 @@ function Trending() {
       `https://api.themoviedb.org/3/search/movie?api_key=67011cf113627fe3311316af752fbcc5&language=en-US&query=${queary}&page=${1}&include_adult=false`
     );
     const result = response.data.results;
-    // console.log(result);
+
     setMovies(result);
+    dispatch(SearchMovieApi(result));
   };
   const queryTextHandler = (event) => {
     const inputData = event.target.value;
@@ -199,34 +217,24 @@ function Trending() {
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
           >
-            {dataSearched.map((data, val) => {
+            {dataSearched.map((data, index) => {
               return (
-                <div key={data.id}>
-                  <Link
-                    to={`/indmoviepage/${data.id}`}
-                    className="linktag"
-                    key={data.id}
-                  >
+                <div key={index}>
+                  <Link to={`/indmoviepage/${data.id}`} className="linktag">
                     <div
-                      key={data.id}
                       className="card"
                       onMouseOver={() => {
                         setTrailerId(data.id);
                       }}
                     >
-                      <img
-                        key={data.id}
-                        src={imageBaseUrl + data.backdrop_path}
-                        alt=""
-                      />
+                      <img src={imageBaseUrl + data.backdrop_path} alt="" />
                       {renderingTheDiv}
 
-                      <div className="cardInfo" key={data.id}>
+                      <div className="cardInfo">
                         <div className="leftinfo">
-                          <h2 key={data.id}>{data.original_title}</h2>
+                          <h2>{data.original_title}</h2>
                           <div className="ratingContainer">
                             <DynamicStar
-                              key={data.id}
                               rating={data.vote_average / 2}
                               width={15}
                               height={15}
